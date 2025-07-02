@@ -1,23 +1,22 @@
-import React,{useState,useEffect} from "react";
+import { Route, Routes } from "react-router-dom";
 import { Footer, Header } from "../Components/Layout";
-import type { menuItemModel } from "../Interfaces";
+import { Home, MenuItemDetails, NotFound } from "../Pages";
 
 function App() {
-  const [menuItems, setMenuItems] = useState<menuItemModel[]>([]);
-
-  useEffect(() => {
-    fetch('https://localhost:7006/api/MenuItem')
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        setMenuItems(data.result);
-      });
-  }, []);
 
   return (
     <div>
       <Header />
-      Main Component
+      <div className="pb-5">
+        <Routes>
+          <Route path="/" element={<Home />}></Route>
+          <Route path="*" element={<NotFound />}></Route>
+        <Route
+            path="/menuItemDetails/:menuItemId"
+            element={<MenuItemDetails />}
+          ></Route>
+        </Routes>
+      </div>
       <Footer />
     </div>
   );
