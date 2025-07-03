@@ -7,3 +7,4 @@ export default interface menuItemModel {
     price: number;
     image: string;
   }
+

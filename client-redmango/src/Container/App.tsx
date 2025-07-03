@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import { Footer, Header } from "../Components/Layout";
-import { Home, MenuItemDetails, NotFound } from "../Pages";
+import { Home, MenuItemDetails, NotFound, ShoppingCart } from "../Pages";
 import { useDispatch } from "react-redux";
 import { useGetShoppingCartQuery } from "../Apis/shoppingCartApi";
 import { useEffect } from "react";
@@ -32,6 +32,7 @@ function App() {
             path="/menuItemDetails/:menuItemId"
             element={<MenuItemDetails />}
           ></Route>
+          <Route path="/shoppingCart" element={<ShoppingCart />}></Route>
         </Routes>
       </div>
       <Footer />
