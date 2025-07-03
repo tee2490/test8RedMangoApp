@@ -1,8 +1,25 @@
 import { Route, Routes } from "react-router-dom";
 import { Footer, Header } from "../Components/Layout";
 import { Home, MenuItemDetails, NotFound } from "../Pages";
+import { useDispatch } from "react-redux";
+import { useGetShoppingCartQuery } from "../Apis/shoppingCartApi";
+import { useEffect } from "react";
+import { setShoppingCart } from "../Redux/shoppingCartSlice";
+import { userId } from "../Common/SD";
 
 function App() {
+   const dispatch = useDispatch();
+
+  const { data, isLoading } = useGetShoppingCartQuery(
+    userId
+  );
+
+  useEffect(() => {
+    if (!isLoading) {
+      console.log(data.result);
+      dispatch(setShoppingCart(data.result?.cartItems));
+    }
+  }, [data]);
 
   return (
     <div>
