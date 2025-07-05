@@ -1,12 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import type { cartItemModel } from "../../../Interfaces";
+import type { apiResponse, cartItemModel } from "../../../Interfaces";
 import type { RootState } from "../../../Redux/store";
 import { inputHelper } from "../../../Helper";
 import { MiniLoader } from "../../../Common";
+import { useInitiatePaymentMutation } from "../../../Apis/paymentApi";
+import { useNavigate } from "react-router-dom";
 
 export default function CartPickUpDetails() {
-    const [loading, setLoading] = useState(false);
+  const [initiatePayment] = useInitiatePaymentMutation();
+  const navigate = useNavigate();
+
+  const userData = useSelector((state: RootState) => state.userAuthStore);
+  const [loading, setLoading] = useState(false);
   const shoppingCartFromStore: cartItemModel[] = useSelector(
     (state: RootState) => state.shoppingCartStore.cartItems ?? []
   );
@@ -20,8 +26,8 @@ export default function CartPickUpDetails() {
   });
 
   const initialUserData = {
-    name: "",
-    email: "",
+    name: userData.fullName,
+    email: userData.email,
     phoneNumber: "",
   };
 
@@ -31,9 +37,26 @@ export default function CartPickUpDetails() {
     setUserInput(tempData);
   };
 
+  useEffect(() => {
+    setUserInput({
+      name: userData.fullName,
+      email: userData.email,
+      phoneNumber: "",
+    });
+  }, [userData]);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+
+    const { data }: apiResponse = await initiatePayment(userData.id);
+    const orderSummary = { grandTotal, totalItems };
+
+    console.log(data)
+    
+    navigate("/payment", {
+      state: { apiResult: data?.result, userInput },
+    });
   };
 
   return (
@@ -90,7 +113,7 @@ export default function CartPickUpDetails() {
           type="submit"
           className="btn btn-lg btn-success form-control mt-3"
         >
-          {loading ? <MiniLoader/> : "Looks Good? Place Order!"}
+          {loading ? <MiniLoader /> : "Looks Good? Place Order!"}
         </button>
       </form>
     </div>

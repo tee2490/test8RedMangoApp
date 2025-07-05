@@ -2,9 +2,13 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useGetMenuItemByIdQuery } from "../Apis/menuItemApi";
 import { useNavigate } from "react-router-dom";
-import { baseUrl, userId } from "../Common/SD";
-import shoppingCartApi, { useUpdateShoppingCartMutation } from "../Apis/shoppingCartApi";
+import { baseUrl } from "../Common/SD";
+import { useUpdateShoppingCartMutation } from "../Apis/shoppingCartApi";
 import { MainLoader, MiniLoader } from "../Common";
+import type { apiResponse, userModel } from "../Interfaces";
+import { toastNotify } from "../Helper";
+import type { RootState } from "../Redux/store";
+import { useSelector } from "react-redux";
 
 // admin id : 94bb0b08-462f-4a95-8545-940b187588f2
 
@@ -16,7 +20,11 @@ export default function MenuItemDetails() {
   const [quantity, setQuantity] = useState(1);
   const [isAddingToCart, setIsAddingToCart] = useState<boolean>(false);
   const [updateShoppingCart] = useUpdateShoppingCartMutation();
- 
+
+  const userData: userModel = useSelector(
+    (state: RootState) => state.userAuthStore
+  );
+
   const handleQuantity = (counter: number) => {
     let newQuantity = quantity + counter;
     if (newQuantity == 0) {
@@ -27,17 +35,24 @@ export default function MenuItemDetails() {
   };
 
   const handleAddToCart = async (menuItemId: number) => {
+    if (!userData.id) {
+      navigate("/login");
+      return;
+    }
+
     setIsAddingToCart(true);
 
-    const response = await updateShoppingCart({
+    const response: apiResponse = await updateShoppingCart({
       menuItemId: menuItemId,
       updateQuantityBy: quantity,
-      userId: userId,
+      userId: userData.id,
     });
 
-    console.log(response);
+    if (response.data && response.data.isSuccess) {
+      toastNotify("Item added to cart successfully!");
+    }
 
-    setTimeout(()=>setIsAddingToCart(false),500);
+    setTimeout(() => setIsAddingToCart(false), 500);
   };
 
   return (
@@ -88,7 +103,7 @@ export default function MenuItemDetails() {
             </span>
             <div className="row pt-4">
               <div className="col-5">
-                 {isAddingToCart ? (
+                {isAddingToCart ? (
                   <button disabled className="btn btn-success form-control">
                     <MiniLoader />
                   </button>
@@ -126,7 +141,7 @@ export default function MenuItemDetails() {
           className="d-flex justify-content-center"
           style={{ width: "100%" }}
         >
-           <MainLoader/>
+          <MainLoader />
         </div>
       )}
     </div>

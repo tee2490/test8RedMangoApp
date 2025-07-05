@@ -1,18 +1,21 @@
 import { useSelector, useDispatch } from "react-redux";
-import type { cartItemModel } from "../../../Interfaces";
+import type { cartItemModel, userModel } from "../../../Interfaces";
 import type { RootState } from "../../../Redux/store";
 import {
   removeFromCart,
   updateQuantity,
 } from "../../../Redux/shoppingCartSlice";
 import { useUpdateShoppingCartMutation } from "../../../Apis/shoppingCartApi";
-import { userId } from "../../../Common/SD";
 
 function CartSummary() {
   const dispatch = useDispatch();
   const [updateShoppingCart] = useUpdateShoppingCartMutation();
   const shoppingCartFromStore: cartItemModel[] = useSelector(
     (state: RootState) => state.shoppingCartStore.cartItems ?? []
+  );
+
+  const userData: userModel = useSelector(
+    (state: RootState) => state.userAuthStore
   );
 
   if (!shoppingCartFromStore) {
@@ -32,8 +35,8 @@ function CartSummary() {
       //ปรับปรุง DB จริง
       updateShoppingCart({
         menuItemId: cartItem.menuItem?.id,
-        updateQuantityBy,
-        userId: userId,
+        updateQuantityBy: 0,
+        userId: userData.id,
       });
 
       //ปรับปรุง State
@@ -43,7 +46,7 @@ function CartSummary() {
       updateShoppingCart({
         menuItemId: cartItem.menuItem?.id,
         updateQuantityBy: updateQuantityBy,
-        userId: userId,
+        userId: userData.id,
       });
       dispatch(
         updateQuantity({
