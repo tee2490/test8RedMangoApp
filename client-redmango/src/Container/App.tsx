@@ -1,6 +1,17 @@
 import { Route, Routes } from "react-router-dom";
 import { Footer, Header } from "../Components/Layout";
-import { Home, Login, MenuItemDetails, NotFound, Payment, Register, ShoppingCart } from "../Pages";
+import {
+  Home,
+  Login,
+  MenuItemDetails,
+  MyOrders,
+  NotFound,
+  OrderConfirmed,
+  OrderDetails,
+  Payment,
+  Register,
+  ShoppingCart,
+} from "../Pages";
 import { useDispatch, useSelector } from "react-redux";
 import { useGetShoppingCartQuery } from "../Apis/shoppingCartApi";
 import { useEffect } from "react";
@@ -11,9 +22,9 @@ import { jwtDecode } from "jwt-decode";
 import type { RootState } from "../Redux/store";
 
 function App() {
-   const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
- const userData = useSelector((state: RootState) => state.userAuthStore);
+  const userData = useSelector((state: RootState) => state.userAuthStore);
 
   const { data, isLoading } = useGetShoppingCartQuery(userData.id);
 
@@ -39,7 +50,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />}></Route>
           <Route path="*" element={<NotFound />}></Route>
-        <Route
+          <Route
             path="/menuItemDetails/:menuItemId"
             element={<MenuItemDetails />}
           ></Route>
@@ -47,6 +58,12 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/payment" element={<Payment />} />
+          <Route
+            path="order/orderconfirmed/:id"
+            element={<OrderConfirmed />}
+          ></Route>
+          <Route path="/order/myOrders" element={<MyOrders />} />
+       <Route path="/order/orderDetails/:id" element={<OrderDetails />} />
         </Routes>
       </div>
       <Footer />

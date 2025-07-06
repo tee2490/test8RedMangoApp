@@ -4,6 +4,7 @@ import type { cartItemModel, userModel } from "../../Interfaces";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../Redux/store";
 import { emptyUserState, setLoggedInUser } from "../../Redux/userAuthSlice";
+import { SD_Roles } from "../../Common/SD";
 
 function Header() {
   const dispatch = useDispatch();
@@ -16,7 +17,7 @@ function Header() {
     (state: RootState) => state.userAuthStore
   );
 
-    const handleLogout = () => {
+  const handleLogout = () => {
     localStorage.removeItem("token");
     dispatch(setLoggedInUser({ ...emptyUserState }));
     navigate("/");
@@ -41,12 +42,58 @@ function Header() {
             <span className="navbar-toggler-icon" />
           </button>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul className="navbar-nav me-auto mb-2 mb-lg-0 w-100">
+            <ul className="navbar-nav me-auto mb-2 mb-lg-0 w-100">
               <li className="nav-item">
                 <NavLink className="nav-link" aria-current="page" to="/">
                   Home
                 </NavLink>
               </li>
+
+              {userData.role == SD_Roles.ADMIN ? (
+                <li className="nav-item dropdown">
+                  <a
+                    className="nav-link dropdown-toggle"
+                    href="#"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    Admin Panel
+                  </a>
+                  <ul className="dropdown-menu">
+                    <li
+                      style={{ cursor: "pointer" }}
+                      className="dropdown-item"
+                      onClick={() => navigate("order/myorders")}
+                    >
+                      My Orders
+                    </li>
+                    <li
+                      style={{ cursor: "pointer" }}
+                      className="dropdown-item"
+                      onClick={() => navigate("order/allOrders")}
+                    >
+                      All Orders
+                    </li>
+                    <li>
+                      <a className="dropdown-item" href="#">
+                        Something else here
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+              ) : (
+                <li className="nav-item">
+                  <NavLink
+                    className="nav-link"
+                    aria-current="page"
+                    to="/order/myorders"
+                  >
+                    Orders
+                  </NavLink>
+                </li>
+              )}
+
               <li className="nav-item">
                 <NavLink
                   className="nav-link"
@@ -54,44 +101,12 @@ function Header() {
                   to="/shoppingCart"
                 >
                   <i className="bi bi-cart"></i>
-                   {userData.id && `(${shoppingCartFromStore.length})`}
+                  {userData.id && `(${shoppingCartFromStore.length})`}
                 </NavLink>
-              </li>
-              <li className="nav-item dropdown">
-                <a
-                  className="nav-link dropdown-toggle"
-                  href="#"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Admin panel
-                </a>
-                <ul className="dropdown-menu">
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Action
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Another action
-                    </a>
-                  </li>
-                  <li>
-                    <hr className="dropdown-divider" />
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Something else here
-                    </a>
-                  </li>
-                </ul>
               </li>
 
               <div className="d-flex" style={{ marginLeft: "auto" }}>
-                
-              {userData.id && (
+                {userData.id && (
                   <>
                     <li className="nav-item">
                       <button
@@ -107,13 +122,13 @@ function Header() {
                     </li>
                     <li className="nav-item">
                       <button
-                      onClick={handleLogout}
                         className="btn btn-success btn-outlined rounded-pill text-white mx-2"
                         style={{
                           border: "none",
                           height: "40px",
                           width: "100px",
                         }}
+                        onClick={handleLogout}
                       >
                         Logout
                       </button>
@@ -144,7 +159,6 @@ function Header() {
                   </>
                 )}
               </div>
-
             </ul>
           </div>
         </div>
