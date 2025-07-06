@@ -24,7 +24,7 @@ namespace API_RedMango.Controllers
         [HttpGet]
         public async Task<IActionResult> GetMenuItems()
         {
-            _response.Result = await _db.MenuItems.ToListAsync();
+            _response.Result = _db.MenuItems.OrderByDescending(p => p.Id);
             _response.StatusCode = HttpStatusCode.OK;
             return Ok(_response);
         }

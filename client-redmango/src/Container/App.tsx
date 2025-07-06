@@ -1,9 +1,13 @@
 import { Route, Routes } from "react-router-dom";
 import { Footer, Header } from "../Components/Layout";
 import {
+  AccessDenied,
+  AllOrders,
   Home,
   Login,
+  MainList,
   MenuItemDetails,
+  MenuItemUpsert,
   MyOrders,
   NotFound,
   OrderConfirmed,
@@ -63,7 +67,15 @@ function App() {
             element={<OrderConfirmed />}
           ></Route>
           <Route path="/order/myOrders" element={<MyOrders />} />
-       <Route path="/order/orderDetails/:id" element={<OrderDetails />} />
+          <Route path="/order/orderDetails/:id" element={<OrderDetails />} />
+          <Route path="/order/allOrders" element={<AllOrders />} />
+          <Route path="/accessDenied" element={<AccessDenied />} />
+          <Route path="/menuItem/mainList" element={<MainList />} />
+          <Route
+            path="/menuItem/menuItemUpsert/:id"
+            element={<MenuItemUpsert />}
+          />
+          <Route path="/menuItem/menuItemUpsert" element={<MenuItemUpsert />} />
         </Routes>
       </div>
       <Footer />
